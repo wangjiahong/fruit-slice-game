@@ -2,6 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 body {
@@ -369,79 +373,197 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+    }
+
     #game-container {
         width: 100vw;
-        height: 100vh;
+        min-height: 100vh;
+        height: auto;
         max-width: none;
         max-height: none;
         border-radius: 0;
     }
 
+    /* Start Screen */
+    #start-screen {
+        padding: 40px 15px;
+        min-height: 100vh;
+    }
+
     #start-screen h1 {
         font-size: 2em;
+        margin-top: 40px;
     }
 
     #start-screen p {
-        font-size: 1em;
+        font-size: 0.95em;
+        padding: 0 10px;
     }
 
     .btn-large {
-        padding: 15px 40px;
-        font-size: 1.2em;
+        padding: 18px 50px;
+        font-size: 1.3em;
+        min-height: 60px;
+    }
+
+    /* Game UI */
+    #game-ui {
+        padding: 15px 10px;
     }
 
     #level-info {
-        font-size: 1.1em;
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .stat .label {
+        font-size: 0.8em;
     }
 
     .stat .value {
-        font-size: 1.5em;
-    }
-
-    #result-buttons {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
+        font-size: 1.4em;
     }
 
     /* Stack layout on mobile */
     #game-content-wrapper {
         flex-direction: column;
+        overflow-y: auto;
     }
 
+    /* Hide leaderboard on mobile to save space */
     #leaderboard-container {
-        width: 100%;
-        margin: 10px;
+        display: none;
     }
 
+    /* Game canvas container */
+    #game-canvas-container {
+        width: 100%;
+        min-width: auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #game-canvas {
+        width: 100%;
+        min-height: 300px;
+        height: auto;
+        flex: 1;
+        touch-action: none;
+    }
+
+    #instruction {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+
+    /* Inline result - show at bottom */
     #inline-result {
         width: 100%;
         margin: 10px;
+        padding: 15px;
+        order: 3;
     }
 
-    /* Adjust home leaderboard for mobile */
+    #inline-result h3 {
+        font-size: 1.1em;
+    }
+
+    .inline-result-row {
+        font-size: 0.95em;
+    }
+
+    .btn-small {
+        padding: 12px 20px;
+        font-size: 1em;
+        min-height: 48px;
+    }
+
+    /* Result screen */
+    #result-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 15px 30px;
+        font-size: 1.1em;
+        min-height: 50px;
+    }
+
+    /* Home leaderboard */
     #home-leaderboard {
-        max-width: 90%;
+        max-width: 95%;
         padding: 15px;
+        margin-top: 20px;
+    }
+
+    #home-leaderboard h3 {
+        font-size: 1.2em;
     }
 
     .leaderboard-item {
-        font-size: 0.85em;
-        padding: 6px 3px;
+        font-size: 0.9em;
+        padding: 8px 5px;
     }
 
-    /* Adjust audio controls */
+    /* Audio controls */
     #audio-controls {
         top: 10px;
         right: 10px;
     }
 
     .audio-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 1em;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1em;
+    }
+
+    /* Touch feedback */
+    .btn:active, .btn-large:active, .btn-small:active {
+        transform: scale(0.95);
+        transition: transform 0.1s;
+    }
+
+    /* Result screen */
+    #result-screen {
+        padding: 30px 15px;
+        min-height: 100vh;
+    }
+
+    #result-screen h2 {
+        font-size: 2em;
+    }
+
+    #result-details {
+        padding: 20px;
+    }
+
+    /* Gameover screen */
+    #gameover-screen {
+        padding: 30px 15px;
+        min-height: 100vh;
+    }
+
+    #gameover-screen h2 {
+        font-size: 2em;
+    }
+
+    #gameover-message {
+        font-size: 1.1em;
+        padding: 0 15px;
+    }
+
+    #final-score {
+        font-size: 1.8em;
+    }
+
+    /* Game screen */
+    #game-screen {
+        min-height: 100vh;
     }
 }
 
