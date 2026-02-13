@@ -174,7 +174,11 @@ class LevelManager {
     createShapeForLevel(canvasWidth, canvasHeight, levelConfig) {
         const centerX = canvasWidth / 2;
         const centerY = canvasHeight / 2;
-        const baseSize = Math.min(canvasWidth, canvasHeight) * 0.3;
+
+        // Mobile: larger fruit size to fill more space and reduce empty area
+        const isMobile = window.innerWidth <= 768;
+        const sizeMultiplier = isMobile ? 0.55 : 0.3;
+        const baseSize = Math.min(canvasWidth, canvasHeight) * sizeMultiplier;
 
         switch(levelConfig.shape) {
             case 'circle':
