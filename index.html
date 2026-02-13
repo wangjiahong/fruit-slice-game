@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水果切割游戏 - Fruit Slice Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="start-screen" class="screen active">
+            <h1>🍉 水果切割游戏</h1>
+            <p>用鼠标画线将水果分成尽可能接近 50:50 的两部分</p>
+            <button id="start-btn" class="btn-large">开始游戏</button>
+            <div id="high-score">最高分: <span id="high-score-value">0</span></div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div id="game-ui">
+                <div id="level-info">
+                    <span id="level-text">第 1 关</span>
+                    <span id="fruit-name">西瓜</span>
+                </div>
+                <div id="stats">
+                    <div id="timer" class="stat">
+                        <span class="label">时间</span>
+                        <span id="time-value" class="value">30</span>
+                    </div>
+                    <div id="cuts-remaining" class="stat">
+                        <span class="label">剩余切割</span>
+                        <span id="cuts-value" class="value">1</span>
+                    </div>
+                    <div id="score" class="stat">
+                        <span class="label">分数</span>
+                        <span id="score-value" class="value">0</span>
+                    </div>
+                </div>
+            </div>
+            <canvas id="game-canvas"></canvas>
+            <div id="instruction">按住鼠标拖拽画线切割水果</div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h2 id="result-title">切割结果</h2>
+            <div id="result-details">
+                <div class="result-item">
+                    <span class="label">左侧:</span>
+                    <span id="left-percentage" class="value">50%</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">右侧:</span>
+                    <span id="right-percentage" class="value">50%</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">偏差:</span>
+                    <span id="deviation" class="value">0%</span>
+                </div>
+                <div class="result-item large">
+                    <span class="label">得分:</span>
+                    <span id="result-score" class="value">100</span>
+                </div>
+            </div>
+            <div id="result-message"></div>
+            <div id="result-buttons">
+                <button id="next-level-btn" class="btn">下一关</button>
+                <button id="retry-btn" class="btn">重试</button>
+                <button id="menu-btn" class="btn">返回菜单</button>
+            </div>
+        </div>
+
+        <div id="gameover-screen" class="screen">
+            <h2>游戏结束</h2>
+            <p id="gameover-message"></p>
+            <div id="final-score">
+                <span class="label">最终分数:</span>
+                <span id="final-score-value" class="value">0</span>
+            </div>
+            <button id="restart-btn" class="btn-large">重新开始</button>
+        </div>
+    </div>
+
+    <script src="js/shapes.js"></script>
+    <script src="js/slicer.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
