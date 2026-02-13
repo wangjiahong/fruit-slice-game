@@ -8,89 +8,145 @@ class LevelManager {
     createLevels() {
         const levels = [];
 
-        // Levels 1-3: Circle shapes with watermelon
-        for (let i = 1; i <= 3; i++) {
-            levels.push({
-                level: i,
-                shape: 'circle',
-                fruit: 'watermelon',
-                difficulty: 'easy',
-                timeLimit: 30,
-                cutsAllowed: 1,
-                perfectRange: 2,
-                goodRange: 5,
-                targetScore: 70,
-                rotation: 0
-            });
-        }
+        // Level 1: Watermelon - Circle - Easy
+        levels.push({
+            level: 1,
+            shape: 'circle',
+            fruit: 'watermelon',
+            difficulty: 'easy',
+            timeLimit: 40,
+            cutsAllowed: 1,
+            perfectRange: 3,
+            goodRange: 6,
+            targetScore: 60,
+            rotation: 0
+        });
 
-        // Levels 4-6: Ellipse shapes with orange
-        for (let i = 4; i <= 6; i++) {
-            levels.push({
-                level: i,
-                shape: 'ellipse',
-                fruit: 'orange',
-                difficulty: 'medium',
-                timeLimit: 25,
-                cutsAllowed: 1,
-                perfectRange: 2,
-                goodRange: 5,
-                targetScore: 75,
-                rotation: (i - 4) * Math.PI / 6 // Increasing rotation
-            });
-        }
+        // Level 2: Watermelon - Circle rotated - Getting harder
+        levels.push({
+            level: 2,
+            shape: 'circle',
+            fruit: 'watermelon',
+            difficulty: 'easy',
+            timeLimit: 35,
+            cutsAllowed: 1,
+            perfectRange: 2.5,
+            goodRange: 5.5,
+            targetScore: 65,
+            rotation: Math.PI / 6
+        });
 
-        // Levels 7-9: Polygon shapes with lemon
-        for (let i = 7; i <= 9; i++) {
-            levels.push({
-                level: i,
-                shape: 'polygon',
-                fruit: 'lemon',
-                difficulty: 'hard',
-                timeLimit: 20,
-                cutsAllowed: 1,
-                perfectRange: 1.5,
-                goodRange: 4,
-                targetScore: 80,
-                rotation: (i - 7) * Math.PI / 4
-            });
-        }
+        // Level 3: Orange - Circle - Medium start
+        levels.push({
+            level: 3,
+            shape: 'circle',
+            fruit: 'orange',
+            difficulty: 'medium',
+            timeLimit: 30,
+            cutsAllowed: 1,
+            perfectRange: 2,
+            goodRange: 5,
+            targetScore: 70,
+            rotation: 0
+        });
 
-        // Levels 10-12: Star shapes with apple
-        for (let i = 10; i <= 12; i++) {
-            levels.push({
-                level: i,
-                shape: 'star',
-                fruit: 'apple',
-                difficulty: 'expert',
-                timeLimit: 18,
-                cutsAllowed: 1,
-                perfectRange: 1,
-                goodRange: 3,
-                targetScore: 85,
-                rotation: (i - 10) * Math.PI / 5
-            });
-        }
+        // Level 4: Orange - Ellipse - Medium
+        levels.push({
+            level: 4,
+            shape: 'ellipse',
+            fruit: 'orange',
+            difficulty: 'medium',
+            timeLimit: 28,
+            cutsAllowed: 1,
+            perfectRange: 2,
+            goodRange: 5,
+            targetScore: 72,
+            rotation: Math.PI / 8
+        });
 
-        // Bonus levels: Mixed challenges with multiple cuts
-        for (let i = 13; i <= 15; i++) {
-            const shapes = ['circle', 'ellipse', 'polygon', 'star'];
-            const fruits = ['watermelon', 'orange', 'lemon', 'apple'];
-            const shapeIndex = (i - 13) % shapes.length;
+        // Level 5: Lemon - Circle - Medium-Hard
+        levels.push({
+            level: 5,
+            shape: 'circle',
+            fruit: 'lemon',
+            difficulty: 'medium',
+            timeLimit: 26,
+            cutsAllowed: 1,
+            perfectRange: 1.8,
+            goodRange: 4.5,
+            targetScore: 74,
+            rotation: Math.PI / 4
+        });
 
-            levels.push({
-                level: i,
-                shape: shapes[shapeIndex],
-                fruit: fruits[shapeIndex],
-                difficulty: 'master',
-                timeLimit: 15,
-                cutsAllowed: 2,
-                perfectRange: 1,
-                goodRange: 3,
-                targetScore: 90,
-                rotation: Math.random() * Math.PI * 2
-            });
-        }
+        // Level 6: Lemon - Ellipse - Hard start
+        levels.push({
+            level: 6,
+            shape: 'ellipse',
+            fruit: 'lemon',
+            difficulty: 'hard',
+            timeLimit: 24,
+            cutsAllowed: 1,
+            perfectRange: 1.6,
+            goodRange: 4,
+            targetScore: 76,
+            rotation: Math.PI / 3
+        });
+
+        // Level 7: Lemon - Polygon - Hard
+        levels.push({
+            level: 7,
+            shape: 'polygon',
+            fruit: 'lemon',
+            difficulty: 'hard',
+            timeLimit: 22,
+            cutsAllowed: 1,
+            perfectRange: 1.5,
+            goodRange: 4,
+            targetScore: 78,
+            rotation: Math.PI / 5
+        });
+
+        // Level 8: Apple - Ellipse - Hard
+        levels.push({
+            level: 8,
+            shape: 'ellipse',
+            fruit: 'apple',
+            difficulty: 'hard',
+            timeLimit: 20,
+            cutsAllowed: 1,
+            perfectRange: 1.4,
+            goodRange: 3.8,
+            targetScore: 80,
+            rotation: Math.PI / 2
+        });
+
+        // Level 9: Apple - Polygon - Expert start
+        levels.push({
+            level: 9,
+            shape: 'polygon',
+            fruit: 'apple',
+            difficulty: 'expert',
+            timeLimit: 18,
+            cutsAllowed: 1,
+            perfectRange: 1.2,
+            goodRange: 3.5,
+            targetScore: 82,
+            rotation: Math.PI / 3
+        });
+
+        // Level 10: Apple - Star - Expert
+        levels.push({
+            level: 10,
+            shape: 'star',
+            fruit: 'apple',
+            difficulty: 'expert',
+            timeLimit: 16,
+            cutsAllowed: 1,
+            perfectRange: 1,
+            goodRange: 3,
+            targetScore: 85,
+            rotation: Math.PI / 4
+        });
 
         return levels;
     }

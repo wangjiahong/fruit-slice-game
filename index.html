@@ -7,12 +7,35 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Audio Controls -->
+    <div id="audio-controls">
+        <button id="music-toggle" class="audio-btn" title="背景音乐">🎵</button>
+        <button id="sound-toggle" class="audio-btn" title="音效">🔊</button>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="bg-music" loop>
+        <source src="assets/sounds/background.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="slice-sound">
+        <source src="assets/sounds/slice.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="perfect-sound">
+        <source src="assets/sounds/perfect.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="game-container">
         <div id="start-screen" class="screen active">
             <h1>🍉 水果切割游戏</h1>
             <p>用鼠标画线将水果分成尽可能接近 50:50 的两部分</p>
             <button id="start-btn" class="btn-large">开始游戏</button>
             <div id="high-score">最高分: <span id="high-score-value">0</span></div>
+
+            <!-- Home Leaderboard -->
+            <div id="home-leaderboard">
+                <h3>🏆 全球排行榜</h3>
+                <div id="home-leaderboard-list"></div>
+            </div>
         </div>
 
         <div id="game-screen" class="screen">
@@ -36,8 +59,40 @@
                     </div>
                 </div>
             </div>
-            <canvas id="game-canvas"></canvas>
-            <div id="instruction">按住鼠标拖拽画线切割水果</div>
+
+            <div id="game-content-wrapper">
+                <!-- Left: Live Leaderboard -->
+                <div id="leaderboard-container">
+                    <h3>🎮 实时排名</h3>
+                    <div id="live-leaderboard-list"></div>
+                </div>
+
+                <!-- Center: Game Canvas -->
+                <div id="game-canvas-container">
+                    <canvas id="game-canvas"></canvas>
+                    <div id="instruction">按住鼠标拖拽画线切割水果</div>
+                </div>
+
+                <!-- Right: Result Display -->
+                <div id="inline-result">
+                    <h3>✂️ 切割结果</h3>
+                    <div id="inline-result-content">
+                        <div class="inline-result-row">
+                            <span>左侧 <strong id="inline-left">50%</strong></span>
+                            <span>右侧 <strong id="inline-right">50%</strong></span>
+                            <span>偏差 <strong id="inline-deviation">0%</strong></span>
+                        </div>
+                        <div id="inline-grade" class="inline-grade">完美！</div>
+                        <div class="inline-result-row">
+                            <span>得分 <strong id="inline-score">100</strong></span>
+                        </div>
+                        <div class="inline-result-buttons">
+                            <button id="inline-next-btn" class="btn btn-small">下一关</button>
+                            <button id="inline-retry-btn" class="btn btn-small">重试</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="result-screen" class="screen">
@@ -79,6 +134,8 @@
         </div>
     </div>
 
+    <script src="js/audio.js"></script>
+    <script src="js/leaderboard.js"></script>
     <script src="js/shapes.js"></script>
     <script src="js/slicer.js"></script>
     <script src="js/levels.js"></script>

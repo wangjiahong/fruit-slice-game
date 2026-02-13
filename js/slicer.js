@@ -6,33 +6,53 @@ class SliceLine {
         this.endX = startX;
         this.endY = startY;
         this.isDrawing = false;
+        // Store the path as array of points for smooth trajectory
+        this.path = [{x: startX, y: startY}];
     }
 
     updateEnd(x, y) {
         this.endX = x;
         this.endY = y;
+        // Add point to path
+        this.path.push({x: x, y: y});
     }
 
     draw(ctx) {
         ctx.save();
-        ctx.strokeStyle = '#ff4757';
-        ctx.lineWidth = 4;
+
+        // Draw black slice path following mouse trajectory
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
-        ctx.shadowColor = '#ff4757';
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 2;
+
+        // Draw the path
+        if (this.path.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(this.path[0].x, this.path[0].y);
+
+            for (let i = 1; i < this.path.length; i++) {
+                ctx.lineTo(this.path[i].x, this.path[i].y);
+            }
+
+            ctx.stroke();
+        }
+
+        // Draw knife tip marker at start point (where cutting begins)
+        ctx.fillStyle = '#ff0000';
+        ctx.shadowColor = '#ff0000';
         ctx.shadowBlur = 10;
-
-        ctx.beginPath();
-        ctx.moveTo(this.startX, this.startY);
-        ctx.lineTo(this.endX, this.endY);
-        ctx.stroke();
-
-        // Draw points at ends
-        ctx.fillStyle = '#ff4757';
         ctx.beginPath();
         ctx.arc(this.startX, this.startY, 6, 0, Math.PI * 2);
         ctx.fill();
+
+        // Draw small indicator at current position
+        ctx.fillStyle = '#000000';
+        ctx.shadowBlur = 5;
         ctx.beginPath();
-        ctx.arc(this.endX, this.endY, 6, 0, Math.PI * 2);
+        ctx.arc(this.endX, this.endY, 4, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();
@@ -45,27 +65,23 @@ class SliceLine {
     }
 
     intersectsShape(shape) {
-        // Check if line endpoints are on opposite sides of the shape
-        // or if the line passes through the shape
-        const startInside = shape.containsPoint(this.startX, this.startY);
-        const endInside = shape.containsPoint(this.endX, this.endY);
+        // Check if the curve path intersects the shape
+        // A valid cut means the line goes through the shape (not necessarily through center)
 
-        // Valid cut: one point inside, one outside, or both outside but line crosses shape
-        if (startInside !== endInside) {
-            return true;
-        }
+        let hasInside = false;
+        let hasOutside = false;
 
-        // Both outside - need to check if line intersects shape
-        if (!startInside && !endInside) {
-            // Sample points along the line
-            const steps = 20;
-            for (let i = 1; i < steps; i++) {
-                const t = i / steps;
-                const x = this.startX + (this.endX - this.startX) * t;
-                const y = this.startY + (this.endY - this.startY) * t;
-                if (shape.containsPoint(x, y)) {
-                    return true;
-                }
+        // Check all points along the path
+        for (const point of this.path) {
+            if (shape.containsPoint(point.x, point.y)) {
+                hasInside = true;
+            } else {
+                hasOutside = true;
+            }
+
+            // Valid cut: path has points both inside and outside the shape
+            if (hasInside && hasOutside) {
+                return true;
             }
         }
 
@@ -76,7 +92,8 @@ class SliceLine {
 // Slicer class - handles cutting logic
 class Slicer {
     constructor() {
-        this.samplingStep = 2; // Pixel sampling step for accuracy vs performance
+        this.samplingStep = 1; // Count every single pixel for maximum accuracy
+        this.subPixelSamples = 4; // Sample 4 points within each pixel (2x2 grid)
     }
 
     calculateSplit(shape, line) {
@@ -88,26 +105,28 @@ class Slicer {
         let leftCount = 0;
         let rightCount = 0;
 
-        // Create an off-screen canvas for accurate pixel testing
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = bbox.width;
-        tempCanvas.height = bbox.height;
-        const tempCtx = tempCanvas.getContext('2d');
+        // Sub-pixel sampling offsets for 2x2 grid
+        const subPixelOffsets = [
+            { dx: 0.25, dy: 0.25 },
+            { dx: 0.75, dy: 0.25 },
+            { dx: 0.25, dy: 0.75 },
+            { dx: 0.75, dy: 0.75 }
+        ];
 
-        // Translate context to match bounding box
-        tempCtx.translate(-bbox.x, -bbox.y);
+        // Sample every pixel with sub-pixel accuracy
+        for (let x = Math.floor(bbox.x); x < Math.ceil(bbox.x + bbox.width); x += this.samplingStep) {
+            for (let y = Math.floor(bbox.y); y < Math.ceil(bbox.y + bbox.height); y += this.samplingStep) {
+                // Sub-pixel sampling: test multiple points within each pixel
+                for (const offset of subPixelOffsets) {
+                    const sampleX = x + offset.dx;
+                    const sampleY = y + offset.dy;
 
-        // Create shape path
-        shape.createPath(tempCtx);
-
-        // Sample points
-        for (let x = bbox.x; x < bbox.x + bbox.width; x += this.samplingStep) {
-            for (let y = bbox.y; y < bbox.y + bbox.height; y += this.samplingStep) {
-                if (shape.containsPoint(x, y)) {
-                    if (this.isPointLeftOfLine(x, y, line)) {
-                        leftCount++;
-                    } else {
-                        rightCount++;
+                    if (shape.containsPoint(sampleX, sampleY)) {
+                        if (this.isPointLeftOfLine(sampleX, sampleY, line)) {
+                            leftCount++;
+                        } else {
+                            rightCount++;
+                        }
                     }
                 }
             }
@@ -129,34 +148,99 @@ class Slicer {
     }
 
     isPointLeftOfLine(px, py, line) {
-        // Use cross product to determine which side of the line the point is on
-        const dx = line.endX - line.startX;
-        const dy = line.endY - line.startY;
-        const dxp = px - line.startX;
-        const dyp = py - line.startY;
+        // Use the entire curve path, not just start/end points
+        // Find the closest segment on the path and use its cross product
 
-        const cross = dx * dyp - dy * dxp;
-        return cross > 0;
+        if (line.path.length < 2) {
+            // Fallback to start/end if path is too short
+            const dx = line.endX - line.startX;
+            const dy = line.endY - line.startY;
+            const dxp = px - line.startX;
+            const dyp = py - line.startY;
+            const cross = dx * dyp - dy * dxp;
+            return cross > 0;
+        }
+
+        // Find the closest segment on the curve path
+        let minDistance = Infinity;
+        let closestCross = 0;
+
+        for (let i = 0; i < line.path.length - 1; i++) {
+            const p1 = line.path[i];
+            const p2 = line.path[i + 1];
+
+            // Calculate perpendicular distance from point to this segment
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const dxp = px - p1.x;
+            const dyp = py - p1.y;
+
+            // Project point onto line segment
+            const segmentLengthSq = dx * dx + dy * dy;
+            let t = 0;
+            if (segmentLengthSq > 0) {
+                t = Math.max(0, Math.min(1, (dxp * dx + dyp * dy) / segmentLengthSq));
+            }
+
+            // Find closest point on segment
+            const closestX = p1.x + t * dx;
+            const closestY = p1.y + t * dy;
+
+            // Calculate distance
+            const distX = px - closestX;
+            const distY = py - closestY;
+            const distance = distX * distX + distY * distY;
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                // Use cross product of this segment
+                closestCross = dx * dyp - dy * dxp;
+            }
+        }
+
+        // Use epsilon for points very close to the line
+        const epsilon = 1e-10;
+        if (Math.abs(closestCross) < epsilon) {
+            return true;
+        }
+
+        return closestCross > 0;
     }
 
-    // Calculate score based on deviation from 50:50
+    // Calculate score based on deviation from 50:50 - more precise scoring
     calculateScore(deviation, perfectRange, goodRange, timeBonus = 0) {
         let score = 0;
 
+        // Perfect zone: deviation <= perfectRange
         if (deviation <= perfectRange) {
-            score = 100; // Perfect cut
-        } else if (deviation <= goodRange) {
-            // Good cut: 85-99
-            score = 100 - (deviation - perfectRange) * 3;
-        } else {
-            // Normal/Poor cut: 0-84
-            score = Math.max(0, 85 - (deviation - goodRange) * 2);
+            // Score decreases linearly from 100 to 95 within perfect range
+            score = 100 - (deviation / perfectRange) * 5;
+        }
+        // Good zone: perfectRange < deviation <= goodRange
+        else if (deviation <= goodRange) {
+            // Score decreases from 95 to 70
+            const rangeWidth = goodRange - perfectRange;
+            const positionInRange = deviation - perfectRange;
+            score = 95 - (positionInRange / rangeWidth) * 25;
+        }
+        // Normal zone: goodRange < deviation <= 10%
+        else if (deviation <= 10) {
+            // Score decreases from 70 to 40
+            const rangeWidth = 10 - goodRange;
+            const positionInRange = deviation - goodRange;
+            score = 70 - (positionInRange / rangeWidth) * 30;
+        }
+        // Poor zone: deviation > 10%
+        else {
+            // Score decreases from 40 to 0, capped at 20% deviation
+            const positionInRange = Math.min(deviation - 10, 10);
+            score = Math.max(0, 40 - positionInRange * 4);
         }
 
-        // Add time bonus (up to 10 points)
+        // Add time bonus (up to 15 points for very fast completion)
         score = Math.min(100, score + timeBonus);
 
-        return Math.round(score);
+        return Math.round(score * 10) / 10; // Return with 1 decimal place
     }
 
     getResultGrade(deviation, perfectRange, goodRange) {
@@ -164,7 +248,7 @@ class Slicer {
             return 'perfect';
         } else if (deviation <= goodRange) {
             return 'good';
-        } else if (deviation <= 10) {
+        } else if (deviation <= 8) {
             return 'normal';
         } else {
             return 'poor';

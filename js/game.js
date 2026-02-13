@@ -14,6 +14,8 @@ class Game {
         this.ui = new UIController();
         this.levelManager = new LevelManager();
         this.slicer = new Slicer();
+        this.audioManager = new AudioManager();
+        this.leaderboardManager = new LeaderboardManager();
 
         this.state = GameState.START;
         this.currentShape = null;
@@ -37,6 +39,8 @@ class Game {
         this.ui.onRetryClick(() => this.retryLevel());
         this.ui.onMenuClick(() => this.returnToMenu());
         this.ui.onRestartClick(() => this.restartGame());
+        this.ui.onInlineNextClick(() => this.nextLevel());
+        this.ui.onInlineRetryClick(() => this.retryLevel());
 
         // Canvas mouse events
         this.ui.onCanvasMouseDown((x, y) => this.handleMouseDown(x, y));
@@ -52,6 +56,9 @@ class Game {
     startGame() {
         this.totalScore = 0;
         this.levelManager.resetToLevel(1);
+        this.audioManager.playMusic();
+        this.leaderboardManager.initializeLiveLeaderboard(0);
+        this.leaderboardManager.simulateLiveUpdates();
         this.startLevel();
     }
 
@@ -60,6 +67,7 @@ class Game {
 
         // Show game screen first so canvas has proper dimensions
         this.ui.showScreen('game');
+        this.ui.hideInlineResult();
 
         // Small delay to ensure screen is visible and canvas is sized
         setTimeout(() => {
@@ -121,7 +129,12 @@ class Game {
     handleMouseDown(x, y) {
         if (this.state !== GameState.PLAYING) return;
 
-        this.currentLine = new SliceLine(x, y);
+        // Adjust line starting position to match knife tip
+        // Offset left by knife length (28px) and up by 1/5 knife length (6px)
+        const offsetX = -28;
+        const offsetY = -6;
+
+        this.currentLine = new SliceLine(x + offsetX, y + offsetY);
         this.state = GameState.CUTTING;
         this.ui.addCanvasClass('drawing');
     }
@@ -129,7 +142,11 @@ class Game {
     handleMouseMove(x, y) {
         if (this.state !== GameState.CUTTING || !this.currentLine) return;
 
-        this.currentLine.updateEnd(x, y);
+        // Apply same offset to mouse movement
+        const offsetX = -28;
+        const offsetY = -6;
+
+        this.currentLine.updateEnd(x + offsetX, y + offsetY);
     }
 
     handleMouseUp(x, y) {
@@ -176,6 +193,9 @@ class Game {
         this.cutsRemaining--;
         this.ui.updateCutsRemaining(this.cutsRemaining);
 
+        // Play slice sound
+        this.audioManager.playSliceSound();
+
         // Create split animation
         this.splitAnimation = this.slicer.createSplitAnimation(this.currentShape, this.currentLine);
         this.state = GameState.ANIMATING;
@@ -188,6 +208,8 @@ class Game {
                 this.currentShape.y,
                 '#ffd700'
             );
+            // Play perfect sound
+            this.audioManager.playPerfectSound();
         }
 
         // Wait for animation to complete
@@ -216,6 +238,9 @@ class Game {
         this.totalScore += score;
         this.ui.updateScore(this.totalScore);
 
+        // Update leaderboard
+        this.leaderboardManager.updateLiveLeaderboard(this.totalScore);
+
         // Update high score
         if (this.totalScore > this.highScore) {
             this.highScore = this.totalScore;
@@ -236,7 +261,9 @@ class Game {
         const hasNextLevel = this.levelManager.currentLevel < this.levelManager.getTotalLevels();
 
         this.state = GameState.RESULT;
-        this.ui.showResult(splitResult, score, grade, message, canProceed && hasNextLevel);
+
+        // Show result inline instead of switching screens
+        this.ui.showInlineResult(splitResult, score, grade, message, canProceed && hasNextLevel);
     }
 
     nextLevel() {
@@ -253,6 +280,7 @@ class Game {
 
     returnToMenu() {
         this.stopTimer();
+        this.leaderboardManager.stopLiveUpdates();
         this.state = GameState.START;
         this.ui.showScreen('start');
     }
@@ -263,6 +291,7 @@ class Game {
 
     gameOver(message) {
         this.stopTimer();
+        this.leaderboardManager.stopLiveUpdates();
         this.state = GameState.GAMEOVER;
         this.ui.showGameOver(
             this.totalScore,

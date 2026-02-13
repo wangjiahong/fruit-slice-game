@@ -37,7 +37,17 @@ class UIController {
             // Gameover screen
             gameoverMessage: document.getElementById('gameover-message'),
             finalScoreValue: document.getElementById('final-score-value'),
-            restartBtn: document.getElementById('restart-btn')
+            restartBtn: document.getElementById('restart-btn'),
+
+            // Inline result
+            inlineResult: document.getElementById('inline-result'),
+            inlineLeft: document.getElementById('inline-left'),
+            inlineRight: document.getElementById('inline-right'),
+            inlineDeviation: document.getElementById('inline-deviation'),
+            inlineGrade: document.getElementById('inline-grade'),
+            inlineScore: document.getElementById('inline-score'),
+            inlineNextBtn: document.getElementById('inline-next-btn'),
+            inlineRetryBtn: document.getElementById('inline-retry-btn')
         };
 
         this.ctx = this.elements.canvas.getContext('2d');
@@ -45,18 +55,23 @@ class UIController {
     }
 
     setupCanvas() {
-        const container = this.elements.canvas.parentElement;
+        const canvasContainer = document.getElementById('game-canvas-container');
         const ui = document.getElementById('game-ui');
         const instruction = this.elements.instruction;
 
         this.resizeFunction = () => {
-            const containerHeight = container.clientHeight;
-            const uiHeight = ui.offsetHeight;
-            const instructionHeight = instruction.offsetHeight;
-            const availableHeight = containerHeight - uiHeight - instructionHeight;
+            const gameScreen = document.getElementById('game-screen');
+            const gameContentWrapper = document.getElementById('game-content-wrapper');
 
-            this.elements.canvas.width = container.clientWidth;
-            this.elements.canvas.height = availableHeight;
+            if (gameScreen && gameScreen.classList.contains('active')) {
+                const screenHeight = gameScreen.clientHeight;
+                const uiHeight = ui.offsetHeight;
+                const instructionHeight = instruction.offsetHeight;
+                const availableHeight = screenHeight - uiHeight - instructionHeight;
+
+                this.elements.canvas.width = canvasContainer.clientWidth;
+                this.elements.canvas.height = availableHeight;
+            }
         };
 
         this.resizeFunction();
@@ -107,10 +122,10 @@ class UIController {
     }
 
     showResult(splitResult, score, grade, message, hasNextLevel) {
-        this.elements.leftPercentage.textContent = splitResult.left.toFixed(1) + '%';
-        this.elements.rightPercentage.textContent = splitResult.right.toFixed(1) + '%';
-        this.elements.deviation.textContent = splitResult.deviation.toFixed(1) + '%';
-        this.elements.resultScore.textContent = score;
+        this.elements.leftPercentage.textContent = splitResult.left.toFixed(2) + '%';
+        this.elements.rightPercentage.textContent = splitResult.right.toFixed(2) + '%';
+        this.elements.deviation.textContent = splitResult.deviation.toFixed(2) + '%';
+        this.elements.resultScore.textContent = typeof score === 'number' ? score.toFixed(1) : score;
         this.elements.resultMessage.textContent = message;
 
         // Set message color based on grade
@@ -124,6 +139,31 @@ class UIController {
         }
 
         this.showScreen('result');
+    }
+
+    showInlineResult(splitResult, score, grade, message, hasNextLevel) {
+        this.elements.inlineLeft.textContent = splitResult.left.toFixed(2) + '%';
+        this.elements.inlineRight.textContent = splitResult.right.toFixed(2) + '%';
+        this.elements.inlineDeviation.textContent = splitResult.deviation.toFixed(2) + '%';
+        this.elements.inlineScore.textContent = typeof score === 'number' ? score.toFixed(1) : score;
+        this.elements.inlineGrade.textContent = message;
+
+        // Set grade color
+        this.elements.inlineGrade.className = 'inline-grade ' + grade;
+
+        // Show/hide next level button
+        if (hasNextLevel) {
+            this.elements.inlineNextBtn.style.display = 'inline-block';
+        } else {
+            this.elements.inlineNextBtn.style.display = 'none';
+        }
+
+        // Show inline result with class
+        this.elements.inlineResult.classList.add('visible');
+    }
+
+    hideInlineResult() {
+        this.elements.inlineResult.classList.remove('visible');
     }
 
     showGameOver(totalScore, highScore, level) {
@@ -174,6 +214,14 @@ class UIController {
 
     onRestartClick(callback) {
         this.elements.restartBtn.addEventListener('click', callback);
+    }
+
+    onInlineNextClick(callback) {
+        this.elements.inlineNextBtn.addEventListener('click', callback);
+    }
+
+    onInlineRetryClick(callback) {
+        this.elements.inlineRetryBtn.addEventListener('click', callback);
     }
 
     // Canvas mouse/touch events
