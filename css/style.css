@@ -429,7 +429,9 @@ body {
     /* Stack layout on mobile */
     #game-content-wrapper {
         flex-direction: column;
+        flex: 1;
         overflow-y: auto;
+        min-height: 0;
     }
 
     /* Hide leaderboard on mobile to save space */
@@ -441,16 +443,15 @@ body {
     #game-canvas-container {
         width: 100%;
         min-width: auto;
-        flex: 1;
+        flex: 0 0 auto;
         display: flex;
         flex-direction: column;
     }
 
     #game-canvas {
         width: 100%;
-        min-height: 300px;
-        height: auto;
-        flex: 1;
+        height: 400px;
+        max-height: 50vh;
         touch-action: none;
     }
 
@@ -563,7 +564,16 @@ body {
 
     /* Game screen */
     #game-screen {
-        min-height: 100vh;
+        height: 100vh;
+        max-height: -webkit-fill-available;
+    }
+
+    #game-ui {
+        flex-shrink: 0;
+    }
+
+    #instruction {
+        flex-shrink: 0;
     }
 }
 
