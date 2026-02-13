@@ -228,8 +228,13 @@ class UIController {
     onCanvasMouseDown(callback) {
         this.elements.canvas.addEventListener('mousedown', (e) => {
             const rect = this.elements.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+
+            // Calculate scale ratio between canvas size and display size
+            const scaleX = this.elements.canvas.width / rect.width;
+            const scaleY = this.elements.canvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
             callback(x, y);
         });
     }
@@ -237,8 +242,13 @@ class UIController {
     onCanvasMouseMove(callback) {
         this.elements.canvas.addEventListener('mousemove', (e) => {
             const rect = this.elements.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+
+            // Calculate scale ratio between canvas size and display size
+            const scaleX = this.elements.canvas.width / rect.width;
+            const scaleY = this.elements.canvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
             callback(x, y);
         });
     }
@@ -246,8 +256,13 @@ class UIController {
     onCanvasMouseUp(callback) {
         this.elements.canvas.addEventListener('mouseup', (e) => {
             const rect = this.elements.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+
+            // Calculate scale ratio between canvas size and display size
+            const scaleX = this.elements.canvas.width / rect.width;
+            const scaleY = this.elements.canvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
             callback(x, y);
         });
     }
@@ -258,8 +273,13 @@ class UIController {
             e.preventDefault();
             const rect = this.elements.canvas.getBoundingClientRect();
             const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
+
+            // Calculate scale ratio between canvas size and display size
+            const scaleX = this.elements.canvas.width / rect.width;
+            const scaleY = this.elements.canvas.height / rect.height;
+
+            const x = (touch.clientX - rect.left) * scaleX;
+            const y = (touch.clientY - rect.top) * scaleY;
             callback(x, y);
         });
     }
@@ -269,8 +289,13 @@ class UIController {
             e.preventDefault();
             const rect = this.elements.canvas.getBoundingClientRect();
             const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
+
+            // Calculate scale ratio between canvas size and display size
+            const scaleX = this.elements.canvas.width / rect.width;
+            const scaleY = this.elements.canvas.height / rect.height;
+
+            const x = (touch.clientX - rect.left) * scaleX;
+            const y = (touch.clientY - rect.top) * scaleY;
             callback(x, y);
         });
     }
