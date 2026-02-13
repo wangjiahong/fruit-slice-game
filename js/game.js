@@ -129,10 +129,11 @@ class Game {
     handleMouseDown(x, y) {
         if (this.state !== GameState.PLAYING) return;
 
-        // Adjust line starting position to match knife tip
-        // Offset left by knife length (28px) and up by 1/5 knife length (6px)
-        const offsetX = -28;
-        const offsetY = -6;
+        // Adjust line starting position to match knife tip (desktop only)
+        // Mobile doesn't need offset since there's no knife cursor
+        const isMobile = 'ontouchstart' in window;
+        const offsetX = isMobile ? 0 : -28;
+        const offsetY = isMobile ? 0 : -6;
 
         this.currentLine = new SliceLine(x + offsetX, y + offsetY);
         this.state = GameState.CUTTING;
@@ -142,9 +143,10 @@ class Game {
     handleMouseMove(x, y) {
         if (this.state !== GameState.CUTTING || !this.currentLine) return;
 
-        // Apply same offset to mouse movement
-        const offsetX = -28;
-        const offsetY = -6;
+        // Apply same offset to mouse movement (desktop only)
+        const isMobile = 'ontouchstart' in window;
+        const offsetX = isMobile ? 0 : -28;
+        const offsetY = isMobile ? 0 : -6;
 
         this.currentLine.updateEnd(x + offsetX, y + offsetY);
     }
