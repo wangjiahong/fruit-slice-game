@@ -10,41 +10,53 @@ class LevelManager {
         const fruits = ['watermelon', 'orange', 'lemon', 'apple'];
         let fruitIndex = 0;
 
-        // 15个不同的形状，难度递增
-        const shapes = [
-            { shape: 'circle', difficulty: 'easy', timeLimit: 40 },
-            { shape: 'ellipse', difficulty: 'easy', timeLimit: 38, radiusX: 1.0, radiusY: 0.6, rotation: 0 },
-            { shape: 'triangle', difficulty: 'medium', timeLimit: 36 },
-            { shape: 'square', difficulty: 'medium', timeLimit: 34 },
-            { shape: 'ellipse', difficulty: 'medium', timeLimit: 32, radiusX: 0.7, radiusY: 1.0, rotation: 0 },
-            { shape: 'pentagon', difficulty: 'medium', timeLimit: 30 },
-            { shape: 'hexagon', difficulty: 'hard', timeLimit: 28 },
-            { shape: 'star3', difficulty: 'hard', timeLimit: 26 },
-            { shape: 'octagon', difficulty: 'hard', timeLimit: 24 },
-            { shape: 'star4', difficulty: 'hard', timeLimit: 22 },
-            { shape: 'ellipse', difficulty: 'expert', timeLimit: 20, radiusX: 1.2, radiusY: 0.5, rotation: Math.PI / 6 },
-            { shape: 'star5', difficulty: 'expert', timeLimit: 18 },
-            { shape: 'star6', difficulty: 'expert', timeLimit: 16 },
-            { shape: 'polygon', difficulty: 'expert', timeLimit: 14 },
-            { shape: 'star8', difficulty: 'expert', timeLimit: 12 }
+        // 第1关：对称圆形（简单入门）
+        levels.push({
+            level: 1,
+            shape: 'circle',
+            fruit: fruits[fruitIndex++],
+            difficulty: 'easy',
+            timeLimit: 40,
+            cutsAllowed: 1,
+            perfectRange: 3,
+            goodRange: 6,
+            targetScore: 0,
+            rotation: 0
+        });
+
+        // 第2-15关：全部不对称图形
+        const asymmetricShapes = [
+            { shape: 'polygon', seed: 2, difficulty: 'easy', timeLimit: 38 },
+            { shape: 'polygon', seed: 3, difficulty: 'easy', timeLimit: 36 },
+            { shape: 'polygon', seed: 4, difficulty: 'medium', timeLimit: 34 },
+            { shape: 'polygon', seed: 5, difficulty: 'medium', timeLimit: 32 },
+            { shape: 'polygon', seed: 6, difficulty: 'medium', timeLimit: 30 },
+            { shape: 'polygon', seed: 7, difficulty: 'medium', timeLimit: 28 },
+            { shape: 'polygon', seed: 8, difficulty: 'hard', timeLimit: 26 },
+            { shape: 'polygon', seed: 9, difficulty: 'hard', timeLimit: 24 },
+            { shape: 'polygon', seed: 10, difficulty: 'hard', timeLimit: 22 },
+            { shape: 'polygon', seed: 11, difficulty: 'hard', timeLimit: 20 },
+            { shape: 'polygon', seed: 12, difficulty: 'expert', timeLimit: 18 },
+            { shape: 'polygon', seed: 13, difficulty: 'expert', timeLimit: 16 },
+            { shape: 'polygon', seed: 14, difficulty: 'expert', timeLimit: 14 },
+            { shape: 'polygon', seed: 15, difficulty: 'expert', timeLimit: 12 }
         ];
 
-        shapes.forEach((config, index) => {
+        asymmetricShapes.forEach((config, index) => {
             levels.push({
-                level: index + 1,
+                level: index + 2,
                 shape: config.shape,
-                fruit: fruits[fruitIndex],
+                fruit: fruits[fruitIndex % fruits.length],
                 difficulty: config.difficulty,
                 timeLimit: config.timeLimit,
                 cutsAllowed: 1,
-                perfectRange: 3 - (index * 0.12),
-                goodRange: 6 - (index * 0.15),
+                perfectRange: 2.8 - (index * 0.12),
+                goodRange: 5.8 - (index * 0.15),
                 targetScore: 0,
-                rotation: config.rotation || 0,
-                radiusX: config.radiusX,
-                radiusY: config.radiusY
+                rotation: 0,
+                seed: config.seed
             });
-            fruitIndex = (fruitIndex + 1) % fruits.length;
+            fruitIndex++;
         });
 
         return levels;
@@ -109,7 +121,8 @@ class LevelManager {
                 return new PolygonShape(centerX, centerY, this.createRegularPolygon(baseSize * 0.75, 8), levelConfig.fruit);
 
             case 'polygon':
-                return new PolygonShape(centerX, centerY, this.createIrregularPolygon(baseSize * 0.7, levelConfig.level), levelConfig.fruit);
+                const seed = levelConfig.seed || levelConfig.level;
+                return new PolygonShape(centerX, centerY, this.createIrregularPolygon(baseSize * 0.7, seed), levelConfig.fruit);
 
             case 'star3':
                 return new StarShape(centerX, centerY, baseSize * 0.8, baseSize * 0.35, 3, levelConfig.fruit);
