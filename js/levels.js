@@ -92,10 +92,10 @@ class LevelManager {
             rotation: Math.PI / 3
         });
 
-        // Level 7: Lemon - Polygon - Hard
+        // Level 7: Lemon - Ellipse - Hard (改为椭圆，延后复杂形状)
         levels.push({
             level: 7,
-            shape: 'polygon',
+            shape: 'ellipse',
             fruit: 'lemon',
             difficulty: 'hard',
             timeLimit: 22,
@@ -103,7 +103,7 @@ class LevelManager {
             perfectRange: 1.5,
             goodRange: 4,
             targetScore: 78,
-            rotation: Math.PI / 5
+            rotation: Math.PI / 2.5
         });
 
         // Level 8: Apple - Ellipse - Hard

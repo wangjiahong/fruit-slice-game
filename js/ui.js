@@ -64,13 +64,21 @@ class UIController {
             const gameContentWrapper = document.getElementById('game-content-wrapper');
 
             if (gameScreen && gameScreen.classList.contains('active')) {
-                const screenHeight = gameScreen.clientHeight;
-                const uiHeight = ui.offsetHeight;
-                const instructionHeight = instruction.offsetHeight;
-                const availableHeight = screenHeight - uiHeight - instructionHeight;
+                const isMobile = window.innerWidth <= 768;
 
                 this.elements.canvas.width = canvasContainer.clientWidth;
-                this.elements.canvas.height = availableHeight;
+
+                if (isMobile) {
+                    // Mobile: fixed height to prevent resizing between levels
+                    this.elements.canvas.height = 450;
+                } else {
+                    // Desktop: calculate based on available space
+                    const screenHeight = gameScreen.clientHeight;
+                    const uiHeight = ui.offsetHeight;
+                    const instructionHeight = instruction.offsetHeight;
+                    const availableHeight = screenHeight - uiHeight - instructionHeight;
+                    this.elements.canvas.height = availableHeight;
+                }
             }
         };
 
