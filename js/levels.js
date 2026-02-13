@@ -8,7 +8,7 @@ class LevelManager {
     createLevels() {
         const levels = [];
 
-        // Level 1: Watermelon - Circle - Easy
+        // Level 1: 西瓜 - 圆形
         levels.push({
             level: 1,
             shape: 'circle',
@@ -18,25 +18,25 @@ class LevelManager {
             cutsAllowed: 1,
             perfectRange: 3,
             goodRange: 6,
-            targetScore: 60,
+            targetScore: 0,  // 无门槛，总能过关
             rotation: 0
         });
 
-        // Level 2: Watermelon - Circle rotated - Getting harder
+        // Level 2: 西瓜 - 椭圆
         levels.push({
             level: 2,
-            shape: 'circle',
+            shape: 'ellipse',
             fruit: 'watermelon',
             difficulty: 'easy',
             timeLimit: 35,
             cutsAllowed: 1,
             perfectRange: 2.5,
             goodRange: 5.5,
-            targetScore: 65,
+            targetScore: 0,
             rotation: Math.PI / 6
         });
 
-        // Level 3: Orange - Circle - Medium start
+        // Level 3: 橙子 - 圆形
         levels.push({
             level: 3,
             shape: 'circle',
@@ -46,11 +46,11 @@ class LevelManager {
             cutsAllowed: 1,
             perfectRange: 2,
             goodRange: 5,
-            targetScore: 70,
+            targetScore: 0,
             rotation: 0
         });
 
-        // Level 4: Orange - Ellipse - Medium
+        // Level 4: 橙子 - 椭圆
         levels.push({
             level: 4,
             shape: 'ellipse',
@@ -60,11 +60,11 @@ class LevelManager {
             cutsAllowed: 1,
             perfectRange: 2,
             goodRange: 5,
-            targetScore: 72,
-            rotation: Math.PI / 8
+            targetScore: 0,
+            rotation: Math.PI / 4
         });
 
-        // Level 5: Lemon - Circle - Medium-Hard
+        // Level 5: 柠檬 - 圆形
         levels.push({
             level: 5,
             shape: 'circle',
@@ -74,11 +74,11 @@ class LevelManager {
             cutsAllowed: 1,
             perfectRange: 1.8,
             goodRange: 4.5,
-            targetScore: 74,
-            rotation: Math.PI / 4
+            targetScore: 0,
+            rotation: 0
         });
 
-        // Level 6: Lemon - Ellipse - Hard start
+        // Level 6: 柠檬 - 椭圆
         levels.push({
             level: 6,
             shape: 'ellipse',
@@ -88,25 +88,25 @@ class LevelManager {
             cutsAllowed: 1,
             perfectRange: 1.6,
             goodRange: 4,
-            targetScore: 76,
+            targetScore: 0,
             rotation: Math.PI / 3
         });
 
-        // Level 7: Lemon - Ellipse - Hard (改为椭圆，延后复杂形状)
+        // Level 7: 苹果 - 圆形
         levels.push({
             level: 7,
-            shape: 'ellipse',
-            fruit: 'lemon',
+            shape: 'circle',
+            fruit: 'apple',
             difficulty: 'hard',
             timeLimit: 22,
             cutsAllowed: 1,
             perfectRange: 1.5,
             goodRange: 4,
-            targetScore: 78,
-            rotation: Math.PI / 2.5
+            targetScore: 0,
+            rotation: 0
         });
 
-        // Level 8: Apple - Ellipse - Hard
+        // Level 8: 苹果 - 椭圆
         levels.push({
             level: 8,
             shape: 'ellipse',
@@ -116,36 +116,36 @@ class LevelManager {
             cutsAllowed: 1,
             perfectRange: 1.4,
             goodRange: 3.8,
-            targetScore: 80,
+            targetScore: 0,
             rotation: Math.PI / 2
         });
 
-        // Level 9: Apple - Polygon - Expert start
+        // Level 9: 西瓜 - 多边形
         levels.push({
             level: 9,
             shape: 'polygon',
-            fruit: 'apple',
+            fruit: 'watermelon',
             difficulty: 'expert',
             timeLimit: 18,
             cutsAllowed: 1,
             perfectRange: 1.2,
             goodRange: 3.5,
-            targetScore: 82,
-            rotation: Math.PI / 3
+            targetScore: 0,
+            rotation: 0
         });
 
-        // Level 10: Apple - Star - Expert
+        // Level 10: 橙子 - 星形
         levels.push({
             level: 10,
             shape: 'star',
-            fruit: 'apple',
+            fruit: 'orange',
             difficulty: 'expert',
             timeLimit: 16,
             cutsAllowed: 1,
             perfectRange: 1,
             goodRange: 3,
-            targetScore: 85,
-            rotation: Math.PI / 4
+            targetScore: 0,
+            rotation: 0
         });
 
         return levels;

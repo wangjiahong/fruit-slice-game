@@ -258,14 +258,13 @@ class Game {
         );
         const message = this.slicer.getResultMessage(grade);
 
-        // Check if can proceed to next level
-        const canProceed = score >= levelConfig.targetScore;
+        // Check if there's a next level (always show button, no score requirement)
         const hasNextLevel = this.levelManager.currentLevel < this.levelManager.getTotalLevels();
 
         this.state = GameState.RESULT;
 
-        // Show result inline instead of switching screens
-        this.ui.showInlineResult(splitResult, score, grade, message, canProceed && hasNextLevel);
+        // Show result inline - always show next level button if available
+        this.ui.showInlineResult(splitResult, score, grade, message, hasNextLevel);
     }
 
     nextLevel() {
